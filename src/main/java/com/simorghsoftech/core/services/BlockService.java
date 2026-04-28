@@ -5,6 +5,7 @@ import com.simorghsoftech.core.models.Block;
 import com.simorghsoftech.core.repositories.ApiBlockRepository;
 import com.simorghsoftech.core.repositories.BlockEntityRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -49,21 +50,50 @@ public class BlockService {
 
     public List<Block> findBlocksInRange(int start, int end) {
         List<BlockEntity> entities = entityRepo.findExistingBlocksInRange(start, end);
-        return toBlock(entities);
+        return toModel(entities);
     }
 
-    private List<Block> toBlock(List<BlockEntity> entities) {
-        return entities.stream().map(this::toBlock).toList();
+    private List<Block> toModel(List<BlockEntity> entities) {
+        return entities.stream().map(this::toModel).toList();
     }
 
-    private Block toBlock(BlockEntity entity) {
+    private Block toModel(BlockEntity entity) {
         String data = byteToString(entity.rawData);
         return new Block(entity.number, entity.hash, data);
+    }
+
+    private List<BlockEntity> toEntity(List<Block> blocks) {
+        return blocks.stream().map(this::toEntity).toList();
+    }
+
+    private BlockEntity toEntity(Block block) {
+        BlockEntity entity = new BlockEntity();
+        entity.number = block.getNumber();
+        entity.hash = block.getHash();
+        entity.rawData = toByteArray(block.getData());
+        return entity;
     }
 
     private String byteToString(byte[] byteData) {
         return byteData != null
                 ? new String(byteData, StandardCharsets.UTF_8)
                 : null;
+    }
+
+    private byte[] toByteArray(String data) {
+        return data != null
+                ? data.getBytes(StandardCharsets.UTF_8)
+                : null;
+    }
+
+    @Transactional
+    public void storeFromBlockchain(int start, int end) {
+        List<Block> blocks = client.getBlocks(start, end);
+        List<BlockEntity> entities = toEntity(blocks);
+        entityRepo.persist(entities);
+    }
+
+    public int latestScannedBlock(){
+        return entityRepo.findLatestBlockNumber();
     }
 }

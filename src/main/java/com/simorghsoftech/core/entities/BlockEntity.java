@@ -18,6 +18,6 @@ public class BlockEntity extends BaseEntity {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "raw_data")
+    @Column(name = "raw_data", columnDefinition = "LONGBLOB")
     public byte[] rawData;
 }

@@ -18,12 +18,20 @@ public class BlockResource {
     }
 
     @POST
-    public Response getBlocks(GetBlocksRequest request) {
+    @Path("/get")
+    public Response getBlocks(RangeOfBlocksRequest request) {
         List<Block> blocks = blockService.findBlocksInRange(request.start, request.end);
         return Response.ok(blocks).build();
     }
 
-    public record GetBlocksRequest(int start, int end) {
+    public record RangeOfBlocksRequest(int start, int end) {
     }
 
+    @POST
+    @Path("/store")
+    public Response storeFromChain(RangeOfBlocksRequest request) {
+        blockService.storeFromBlockchain(request.start(), request.end());
+//        List<Block> blocks = blockService.findBlocksInRange(request.start, request.end);
+        return Response.ok().build();
+    }
 }

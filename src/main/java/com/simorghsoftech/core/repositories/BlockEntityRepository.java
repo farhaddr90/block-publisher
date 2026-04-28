@@ -31,4 +31,13 @@ public class BlockEntityRepository implements PanacheRepository<BlockEntity> {
                 .setParameter("end", end)
                 .getResultList();
     }
+
+    public Integer findLatestBlockNumber() {
+        return getEntityManager()
+                .createQuery(
+                        "select max(b.number) from BlockEntity b",
+                        Integer.class
+                )
+                .getSingleResult();
+    }
 }
