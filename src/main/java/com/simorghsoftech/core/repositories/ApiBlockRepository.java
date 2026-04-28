@@ -7,6 +7,7 @@ import com.simorghsoftech.api.clients.EthClient;
 import com.simorghsoftech.api.requests.RpcRequest;
 import com.simorghsoftech.core.models.Block;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.web3j.utils.Numeric;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
-public class ApiBlockRepository implements BlockRepository {
+public class ApiBlockRepository {
 
     private final EthClient client;
     private final ObjectMapper mapper;
@@ -26,7 +27,6 @@ public class ApiBlockRepository implements BlockRepository {
         this.mapper = new ObjectMapper();
     }
 
-    @Override
     public Block getBlockByHash(String hash) {
         RpcRequest request = new RpcRequest(
                 1, "2.0", "eth_getBlockByHash", List.of(hash, true)
@@ -36,7 +36,6 @@ public class ApiBlockRepository implements BlockRepository {
         return toBlock(root);
     }
 
-    @Override
     public Block getBlockByNum(int number) {
         String hex = Numeric.toHexStringWithPrefix(BigInteger.valueOf(number));
 
@@ -48,7 +47,6 @@ public class ApiBlockRepository implements BlockRepository {
         return toBlock(root);
     }
 
-    @Override
     public List<Block> getBlocks(int start, int end) {
 
         List<RpcRequest> requests = new ArrayList<>(end - start + 1);

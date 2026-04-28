@@ -16,8 +16,17 @@ public class Block {
         return data;
     }
 
+    public String getHash() {
+        return hash;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
     @Override
     public String toString() {
         return data;
     }
+
 }

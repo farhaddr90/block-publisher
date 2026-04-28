@@ -1,8 +1,23 @@
 package com.simorghsoftech.core.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
-public class BlockEntity extends PanacheEntity {
+@Table(name = "block")
+public class BlockEntity extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
+    @Column(unique = true, nullable = false)
+    public int number;
+
+    @Column(unique = true, nullable = false)
+    public String hash;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "raw_data")
+    public byte[] rawData;
 }

@@ -1,0 +1,51 @@
+services:
+  block_publisher:
+    image: quarkus/block_publisher
+    container_name: "block_publisher"
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      DATASOURCE_HOST: block_publisher_db
+      DATASOURCE_DB: block_publisher
+      DATASOURCE_USER: block_publisher_user
+      DATASOURCE_PASSWORD: djaUIwwxrZg9TlxSgVNgkZnMoIRlw5vAbhHcnSq7jD7gGs4h4q
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    ports:
+      - "8080:8080"
+      - "5007:5005"
+    networks:
+      - block_publisher_net
+    volumes:
+      - shared_data:/deployments/data
+
+  database:
+    image: mariadb:11.4
+    container_name: "block_publisher_db"
+    ports:
+      - "3307:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpass
+      MARIADB_DATABASE: block_publisher
+      MARIADB_USER: block_publisher_user
+      MARIADB_PASSWORD: djaUIwwxrZg9TlxSgVNgkZnMoIRlw5vAbhHcnSq7jD7gGs4h4q
+    volumes:
+      - ./db-init/:/docker-entrypoint-initdb.d/
+      - ./my.cnf:/etc/mysql/my.cnf:ro
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u root -prootpass || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - block_publisher_net
+
+networks:
+  block_publisher_net:
+    driver: bridge
+
+volumes:
+  shared_data:
+  mariadb_data:
+    driver: local

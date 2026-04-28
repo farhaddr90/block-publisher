@@ -14,18 +14,20 @@ import java.util.List;
 @QuarkusTest
 class ApiBlockRepositoryTest {
 
-    private final ApiBlockRepository apiBlockRepository;
+    private final ApiBlockRepository apiBlockRepo;
     private final ObjectMapper mapper;
 
-    ApiBlockRepositoryTest(ApiBlockRepository apiBlockRepository) {
-        this.apiBlockRepository = apiBlockRepository;
+    ApiBlockRepositoryTest(
+            ApiBlockRepository blockRepo
+    ) {
+        this.apiBlockRepo = blockRepo;
         this.mapper = new ObjectMapper();
     }
 
     @Test
     void getBlockByHash() throws JsonProcessingException {
         String hash = "0x04ff5627c3648a0685255284de2c13f73a0bad1a07e759153bbb0f715b46f3a7";
-        Block block = apiBlockRepository.getBlockByHash(hash);
+        Block block = apiBlockRepo.getBlockByHash(hash);
         Assertions.assertNotNull(block);
         Assertions.assertNotNull(block.getData());
         Assertions.assertEquals(
@@ -36,7 +38,7 @@ class ApiBlockRepositoryTest {
 
     @Test
     void getBlocks() {
-        List<Block> blocks = apiBlockRepository.getBlocks(24970248, 24970250);
+        List<Block> blocks = apiBlockRepo.getBlocks(24970248, 24970250);
         Assertions.assertNotNull(blocks);
         Assertions.assertEquals(3, blocks.size());
     }
@@ -44,7 +46,7 @@ class ApiBlockRepositoryTest {
     @Test
     void getBlockByNum() throws JsonProcessingException {
         int blockNum = 24970248;
-        Block block = apiBlockRepository.getBlockByNum(blockNum);
+        Block block = apiBlockRepo.getBlockByNum(blockNum);
 
         Assertions.assertNotNull(block);
         Assertions.assertNotNull(block.getData());
