@@ -1,6 +1,14 @@
 package com.simorghsoftech.core.models;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.web3j.utils.Numeric;
+
+import java.math.BigInteger;
+import java.util.Objects;
+
 public class Block {
     private final int number;
     private final String hash;
@@ -29,4 +37,8 @@ public class Block {
         return data;
     }
 
+    public JsonNode getDataAsJson() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readTree(getData());
+    }
 }

@@ -7,7 +7,6 @@ import com.simorghsoftech.api.clients.EthClient;
 import com.simorghsoftech.api.requests.RpcRequest;
 import com.simorghsoftech.core.models.Block;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.web3j.utils.Numeric;
@@ -25,6 +24,14 @@ public class ApiBlockRepository {
     public ApiBlockRepository(@RestClient EthClient client) {
         this.client = client;
         this.mapper = new ObjectMapper();
+    }
+
+    public Block getLatestBlock() {
+        RpcRequest request = new RpcRequest(
+                1, "2.0", "eth_getBlockByNumber", List.of("finalized", true)
+        );
+        JsonNode root = executeSingle(request);
+        return toBlock(root);
     }
 
     public Block getBlockByHash(String hash) {

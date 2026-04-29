@@ -96,4 +96,11 @@ public class BlockService {
     public int latestScannedBlock(){
         return entityRepo.findLatestBlockNumber();
     }
+
+    @Transactional
+    public void storeLatestBlockFromBlockchain() {
+        Block latestBlock = client.getLatestBlock();
+        BlockEntity entity = toEntity(latestBlock);
+        entityRepo.persist(entity);
+    }
 }
