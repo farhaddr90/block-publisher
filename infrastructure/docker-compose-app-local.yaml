@@ -1,6 +1,9 @@
 services:
   block_publisher:
-    image: quarkus/block_publisher
+#    image: quarkus/block_publisher
+    build:
+      context: ../
+      dockerfile: src/main/docker/Dockerfile.jvm
     container_name: "block_publisher"
     depends_on:
       database:

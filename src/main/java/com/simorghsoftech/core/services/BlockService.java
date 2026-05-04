@@ -8,10 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @ApplicationScoped
 public class BlockService {
@@ -27,28 +24,7 @@ public class BlockService {
         this.client = apiBlockRepository;
     }
 
-    public List<Integer> findMissingBlockNumbers(int start, int end) {
-
-        List<Integer> existing = entityRepo.findExistingNumbersInRange(start, end);
-
-        Set<Integer> existingSet = new HashSet<>(existing);
-        List<Integer> missing = new ArrayList<>();
-
-        for (int i = start; i <= end; i++) {
-            if (!existingSet.contains(i)) {
-                missing.add(i);
-            }
-        }
-
-        return missing;
-    }
-
-//    public void m(int start, int end) {
-//        List<Integer> missingBlockNumbers = findMissingBlockNumbers(start, end);
-//        client.
-//    }
-
-    public List<Block> findBlocksInRange(int start, int end) {
+    public List<Block> findBlocksInRange(long start, long end) {
         List<BlockEntity> entities = entityRepo.findExistingBlocksInRange(start, end);
         return toModel(entities);
     }
@@ -87,13 +63,13 @@ public class BlockService {
     }
 
     @Transactional
-    public void storeFromBlockchain(int start, int end) {
+    public void storeFromBlockchain(long start, long end) {
         List<Block> blocks = client.getBlocks(start, end);
         List<BlockEntity> entities = toEntity(blocks);
         entityRepo.persist(entities);
     }
 
-    public int latestScannedBlock(){
+    public long latestScannedBlock() {
         return entityRepo.findLatestBlockNumber();
     }
 
@@ -102,5 +78,9 @@ public class BlockService {
         Block latestBlock = client.getLatestBlock();
         BlockEntity entity = toEntity(latestBlock);
         entityRepo.persist(entity);
+    }
+
+    public long latestReceivedBlock() {
+        return entityRepo.findLatestBlockNumber();
     }
 }

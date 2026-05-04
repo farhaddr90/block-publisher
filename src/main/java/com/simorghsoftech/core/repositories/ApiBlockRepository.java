@@ -54,11 +54,11 @@ public class ApiBlockRepository {
         return toBlock(root);
     }
 
-    public List<Block> getBlocks(int start, int end) {
+    public List<Block> getBlocks(long start, long end) {
 
-        List<RpcRequest> requests = new ArrayList<>(end - start + 1);
+        List<RpcRequest> requests = new ArrayList<>(Math.toIntExact(end - start + 1));
 
-        for (int i = start, id = 1; i <= end; i++, id++) {
+        for (long i = start, id = 1; i <= end; i++, id++) {
             String hex = Numeric.toHexStringWithPrefix(BigInteger.valueOf(i));
             requests.add(new RpcRequest(id, "2.0", "eth_getBlockByNumber", List.of(hex, true)));
         }
