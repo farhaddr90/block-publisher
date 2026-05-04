@@ -1,13 +1,12 @@
 package com.simorghsoftech.api.endpoints;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.simorghsoftech.api.responses.EthBlock;
 import com.simorghsoftech.core.models.Block;
 import com.simorghsoftech.core.services.BlockService;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
@@ -17,9 +16,13 @@ import java.util.List;
 public class BlockResource {
 
     private final BlockService blockService;
+    private final ObjectMapper mapper;
 
-    BlockResource(final BlockService blockService) {
+    BlockResource(
+            final BlockService blockService
+    ) {
         this.blockService = blockService;
+        this.mapper = new ObjectMapper();
     }
 
     public record RangeOfBlocksRequest(long start, long end) {
@@ -27,28 +30,32 @@ public class BlockResource {
 
     @POST
     @Path("/get")
-    public Response getBlocks(RangeOfBlocksRequest request) {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<EthBlock> getBlocks(RangeOfBlocksRequest request) {
         return getBlocks(request.start, request.end);
     }
 
     @GET
     @Path("/get")
-    public Response getBlocks(@QueryParam("start") long start) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<EthBlock> getBlocks(@QueryParam("start") long start) {
         long end = blockService.latestReceivedBlock();
         return getBlocks(start, end);
     }
 
-    private Response getBlocks(long start, long end) {
+    public List<EthBlock> getBlocks(long start, long end) {
         List<Block> blocks = blockService.findBlocksInRange(start, end);
-        ArrayList<JsonNode> response = new ArrayList<>();
-        try {
-            for (Block block : blocks) {
-                response.add(block.getDataAsJson());
-            }
-            return Response.ok(response.toString()).build();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error parsing JSON", e);
-        }
+
+        return blocks.stream()
+                .map(b -> {
+                    try {
+                        return mapper.readValue(b.getData(), EthBlock.class);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toList();
     }
 
     @POST

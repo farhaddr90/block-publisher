@@ -35,7 +35,7 @@ services:
     volumes:
       - ./db-init/:/docker-entrypoint-initdb.d/
       - ./my.cnf:/etc/mysql/my.cnf:ro
-      - mariadb_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
     healthcheck:
       test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u root -prootpass || exit 1"]
       interval: 5s
@@ -50,5 +50,5 @@ networks:
 
 volumes:
   shared_data:
-  mariadb_data:
+  db_data:
     driver: local

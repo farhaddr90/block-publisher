@@ -4,17 +4,13 @@ package com.simorghsoftech.core.models;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.web3j.utils.Numeric;
-
-import java.math.BigInteger;
-import java.util.Objects;
 
 public class Block {
-    private final int number;
+    private final long number;
     private final String hash;
     private final String data;
 
-    public Block(int number, String hash, String data) {
+    public Block(long number, String hash, String data) {
         this.number = number;
         this.hash = hash;
         this.data = data;
@@ -28,7 +24,7 @@ public class Block {
         return hash;
     }
 
-    public int getNumber() {
+    public long getNumber() {
         return number;
     }
 

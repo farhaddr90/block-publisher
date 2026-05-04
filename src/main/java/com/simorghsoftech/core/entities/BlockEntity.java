@@ -11,7 +11,7 @@ public class BlockEntity extends BaseEntity {
     public Long id;
 
     @Column(unique = true, nullable = false)
-    public int number;
+    public long number;
 
     @Column(unique = true, nullable = false)
     public String hash;
