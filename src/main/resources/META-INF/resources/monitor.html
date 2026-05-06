@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Block Admin Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            background: #111827;
+            padding: 20px;
+        }
+
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+        }
+
+        .card-dark {
+            background: #1f2937;
+            border: none;
+            border-radius: 12px;
+        }
+
+        .big-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #22c55e;
+        }
+
+        .muted {
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h4>📊 Block Admin</h4>
+    <hr style="border-color:#374151">
+
+    <p class="muted">Navigation</p>
+    <ul class="nav flex-column">
+        <li class="nav-item"><a class="nav-link text-light" href="#">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="#">Blocks</a></li>
+        <li class="nav-item"><a class="nav-link text-light" href="#">Scanner</a></li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+
+    <h2>Blockchain Monitor Dashboard</h2>
+    <p class="muted">Live system overview</p>
+
+    <div class="row mt-4">
+
+        <!-- Latest Block Card -->
+        <div class="col-md-4">
+            <div class="card card-dark p-3">
+                <h6 class="muted">Latest Scanned Block</h6>
+                <div id="blockValue" class="big-number">...</div>
+                <small class="muted">updates every second</small>
+            </div>
+        </div>
+
+        <!-- Status Card -->
+        <div class="col-md-4">
+            <div class="card card-dark p-3">
+                <h6 class="muted">Scanner Status</h6>
+                <div class="big-number text-warning">ACTIVE</div>
+            </div>
+        </div>
+
+        <!-- Placeholder Metric -->
+        <div class="col-md-4">
+            <div class="card card-dark p-3">
+                <h6 class="muted">Network Load</h6>
+                <div class="big-number text-info">LOW</div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    async function refresh() {
+        try {
+            const res = await fetch('/monitor/latest');
+            const value = await res.json();
+            document.getElementById('blockValue').innerText = value;
+        } catch (e) {
+            document.getElementById('blockValue').innerText = "ERR";
+        }
+    }
+
+    setInterval(refresh, 1000);
+    refresh();
+</script>
+
+</body>
+</html>

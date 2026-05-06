@@ -1,6 +1,5 @@
 package com.simorghsoftech.api.endpoints;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simorghsoftech.api.responses.EthBlock;
 import com.simorghsoftech.core.models.Block;
@@ -9,7 +8,6 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Path("/v1/block")
@@ -40,7 +38,7 @@ public class BlockResource {
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     public List<EthBlock> getBlocks(@QueryParam("start") long start) {
-        long end = blockService.latestReceivedBlock();
+        long end = blockService.latestScannedBlock();
         return getBlocks(start, end);
     }
 

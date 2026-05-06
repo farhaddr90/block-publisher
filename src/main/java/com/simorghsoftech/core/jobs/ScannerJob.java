@@ -19,9 +19,9 @@ public class ScannerJob {
 
     @Scheduled(every = "${app.scanner.block.job.every.expr}", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void dispatchTransactions() {
+        System.out.println("Job is running");
         long start = blockService.latestScannedBlock() + 1;
         long end = start + batchSize;
-        System.out.printf("Starting scanner job from %d to %d%n", start, end);
         blockService.storeFromBlockchain(start, end);
     }
 }

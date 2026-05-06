@@ -79,8 +79,4 @@ public class BlockService {
         BlockEntity entity = toEntity(latestBlock);
         entityRepo.persist(entity);
     }
-
-    public long latestReceivedBlock() {
-        return entityRepo.findLatestBlockNumber();
-    }
 }
