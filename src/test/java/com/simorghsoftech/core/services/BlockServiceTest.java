@@ -36,6 +36,6 @@ class BlockServiceTest {
     }
 
     @Test
-    void latestScannedBlock() {
+    void latestScannedBlockNumber() {
     }
 }

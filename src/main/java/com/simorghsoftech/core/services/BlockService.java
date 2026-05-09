@@ -63,14 +63,20 @@ public class BlockService {
     }
 
     @Transactional
-    public void storeFromBlockchain(long start, long end) {
+    public List<BlockEntity> storeFromBlockchain(long start, long end) {
         List<Block> blocks = client.getBlocks(start, end);
         List<BlockEntity> entities = toEntity(blocks);
         entityRepo.persist(entities);
+        return entities;
     }
 
-    public long latestScannedBlock() {
+    public Long latestScannedBlockNumber() {
         return entityRepo.findLatestBlockNumber();
+    }
+
+    public Long latestBlockNumberFromBlockchain() {
+        Block latestBlock = client.getLatestBlock();
+        return latestBlock != null ? latestBlock.getNumber() : null;
     }
 
     @Transactional

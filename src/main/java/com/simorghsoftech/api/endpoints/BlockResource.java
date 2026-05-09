@@ -38,7 +38,7 @@ public class BlockResource {
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     public List<EthBlock> getBlocks(@QueryParam("start") long start) {
-        long end = blockService.latestScannedBlock();
+        long end = blockService.latestScannedBlockNumber();
         return getBlocks(start, end);
     }
 

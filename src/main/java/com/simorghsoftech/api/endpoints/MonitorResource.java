@@ -20,6 +20,6 @@ public class MonitorResource {
     @Path("/latest")
     @Produces(MediaType.APPLICATION_JSON)
     public long latest() {
-        return blockService.latestScannedBlock();
+        return blockService.latestScannedBlockNumber();
     }
 }

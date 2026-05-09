@@ -4,6 +4,7 @@ import com.simorghsoftech.core.entities.BlockEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class BlockEntityRepository implements PanacheRepository<BlockEntity> {
                 .getResultList();
     }
 
+    @Transactional
     public Long findLatestBlockNumber() {
         return getEntityManager()
                 .createQuery(
